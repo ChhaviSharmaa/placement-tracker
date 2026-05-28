@@ -26,13 +26,6 @@ A web-based Placement Management System built using Flask, MySQL, Bootstrap, and
 
 ## Screenshots
 
-### Login Page
-
-![Login Page](screenshots/login.png)
-
-### Add Student Page
-
-![Add Student Page](screenshots/add-student.png)
 
 ## Project Structure
 
