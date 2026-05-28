@@ -24,7 +24,6 @@ A web-based Placement Management System built using Flask, MySQL, Bootstrap, and
 * Chart.js
 * Git & GitHub
 
-## Screenshots
 
 
 ## Project Structure
