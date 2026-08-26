@@ -1,8 +1,13 @@
 from flask import Flask, render_template, request, redirect, session
 import mysql.connector
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = "placement_secret_key"
+app.secret_key = os.getenv("SECRET_KEY")
+
 
 # ---------------- DATABASE CONNECTION ----------------
 conn = mysql.connector.connect(
@@ -11,6 +16,7 @@ conn = mysql.connector.connect(
     password="1234",
     database="placement_management"
 )
+
 
 # ---------------- LOGIN ----------------
 @app.route('/login', methods=['GET', 'POST'])
@@ -30,8 +36,6 @@ def login():
 
         user = cur.fetchone()
 
-        print("DEBUG USER:", user)
-
         if user:
             session['user'] = user[1]  # username
             return redirect('/')
@@ -44,7 +48,9 @@ def login():
 # ---------------- LOGOUT ----------------
 @app.route('/logout')
 def logout():
+
     session.pop('user', None)
+
     return redirect('/login')
 
 
@@ -66,7 +72,9 @@ def home():
     cur.execute("SELECT COUNT(*) FROM students WHERE status='Not Placed'")
     not_placed_students = cur.fetchone()[0]
 
-    placement_rate = round((placed_students / total_students) * 100, 2) if total_students > 0 else 0
+    placement_rate = round(
+        (placed_students / total_students) * 100, 2
+    ) if total_students > 0 else 0
 
     return render_template(
         'index.html',
@@ -100,6 +108,7 @@ def students():
 
     cur = conn.cursor()
     cur.execute(query, values)
+
     students_data = cur.fetchall()
 
     return render_template(
@@ -118,6 +127,7 @@ def add_student():
         return redirect('/login')
 
     if request.method == 'POST':
+
         name = request.form['name']
         branch = request.form['branch']
         company = request.form['company']
@@ -126,7 +136,11 @@ def add_student():
         cur = conn.cursor()
 
         cur.execute(
-            "INSERT INTO students (name, branch, company, status) VALUES (%s, %s, %s, %s)",
+            """
+            INSERT INTO students
+            (name, branch, company, status)
+            VALUES (%s, %s, %s, %s)
+            """,
             (name, branch, company, status)
         )
 
@@ -146,7 +160,11 @@ def delete_student(id):
 
     cur = conn.cursor()
 
-    cur.execute("DELETE FROM students WHERE id = %s", (id,))
+    cur.execute(
+        "DELETE FROM students WHERE id = %s",
+        (id,)
+    )
+
     conn.commit()
 
     return redirect('/students')
@@ -168,20 +186,33 @@ def edit_student(id):
         company = request.form['company']
         status = request.form['status']
 
-        cur.execute("""
+        cur.execute(
+            """
             UPDATE students
-            SET name=%s, branch=%s, company=%s, status=%s
+            SET name=%s,
+                branch=%s,
+                company=%s,
+                status=%s
             WHERE id=%s
-        """, (name, branch, company, status, id))
+            """,
+            (name, branch, company, status, id)
+        )
 
         conn.commit()
 
         return redirect('/students')
 
-    cur.execute("SELECT * FROM students WHERE id=%s", (id,))
+    cur.execute(
+        "SELECT * FROM students WHERE id=%s",
+        (id,)
+    )
+
     student = cur.fetchone()
 
-    return render_template('edit_student.html', student=student)
+    return render_template(
+        'edit_student.html',
+        student=student
+    )
 
 
 # ---------------- RUN APP ----------------
