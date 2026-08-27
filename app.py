@@ -18,6 +18,11 @@ conn = mysql.connector.connect(
 )
 
 
+# ---------------- ADMIN CHECK ----------------
+def is_admin():
+    return session.get('role') == 'admin'
+
+
 # ---------------- LOGIN ----------------
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -65,6 +70,9 @@ def home():
     if 'user' not in session:
         return redirect('/login')
 
+    if not is_admin():
+        return "Access Denied"
+
     cur = conn.cursor()
 
     cur.execute("SELECT COUNT(*) FROM students")
@@ -95,6 +103,9 @@ def students():
 
     if 'user' not in session:
         return redirect('/login')
+
+    if not is_admin():
+        return "Access Denied"
 
     search = request.args.get('search')
     status_filter = request.args.get('status')
@@ -130,6 +141,9 @@ def add_student():
     if 'user' not in session:
         return redirect('/login')
 
+    if not is_admin():
+        return "Access Denied"
+
     if request.method == 'POST':
 
         name = request.form['name']
@@ -162,6 +176,9 @@ def delete_student(id):
     if 'user' not in session:
         return redirect('/login')
 
+    if not is_admin():
+        return "Access Denied"
+
     cur = conn.cursor()
 
     cur.execute(
@@ -180,6 +197,9 @@ def edit_student(id):
 
     if 'user' not in session:
         return redirect('/login')
+
+    if not is_admin():
+        return "Access Denied"
 
     cur = conn.cursor()
 
