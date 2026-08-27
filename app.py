@@ -38,7 +38,10 @@ def login():
 
         if user:
             session['user'] = user[1]
+            session['role'] = user[3]
+
             return redirect('/')
+
         else:
             return "Invalid Credentials"
 
@@ -50,6 +53,7 @@ def login():
 def logout():
 
     session.pop('user', None)
+    session.pop('role', None)
 
     return redirect('/login')
 
