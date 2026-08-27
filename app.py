@@ -13,7 +13,7 @@ app.secret_key = os.getenv("SECRET_KEY")
 conn = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="1234",
+    password=os.getenv("DB_PASSWORD"),
     database="placement_management"
 )
 
@@ -37,7 +37,7 @@ def login():
         user = cur.fetchone()
 
         if user:
-            session['user'] = user[1]  # username
+            session['user'] = user[1]
             return redirect('/')
         else:
             return "Invalid Credentials"
