@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Dashboard</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Student Dashboard</h2>
+
+        <a href="/logout" class="btn btn-danger">
+            Logout
+        </a>
+    </div>
+
+
+    <!-- STUDENT INFORMATION -->
+    <div class="card shadow p-4 mb-4">
+
+        <h4 class="mb-3">My Profile</h4>
+
+        <p>
+            <strong>Name:</strong>
+            {{ student[1] }}
+        </p>
+
+        <p>
+            <strong>Branch:</strong>
+            {{ student[2] }}
+        </p>
+
+        <p>
+            <strong>Company:</strong>
+            {% if student[3] %}
+                {{ student[3] }}
+            {% else %}
+                Not Placed
+            {% endif %}
+        </p>
+
+        <p>
+            <strong>Placement Status:</strong>
+            {{ student[4] }}
+        </p>
+
+    </div>
+
+
+    <!-- AI FEATURE -->
+    <div class="card shadow p-4">
+
+        <h4>AI Job Match</h4>
+
+        <p class="text-muted">
+            Upload your resume and enter a job description
+            to check how well your skills match the job.
+        </p>
+
+        <button class="btn btn-primary" disabled>
+            AI Resume Analysis — Coming Soon
+        </button>
+
+    </div>
+
+</div>
+
+</body>
+</html>

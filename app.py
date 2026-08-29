@@ -44,6 +44,10 @@ def login():
         if user:
             session['user'] = user[1]
             session['role'] = user[3]
+            session['student_id'] = user[4]
+
+            if user[3] == 'student':
+                return redirect('/student-dashboard')
 
             return redirect('/')
 
@@ -59,11 +63,12 @@ def logout():
 
     session.pop('user', None)
     session.pop('role', None)
+    session.pop('student_id', None)
 
     return redirect('/login')
 
 
-# ---------------- DASHBOARD ----------------
+# ---------------- ADMIN DASHBOARD ----------------
 @app.route('/')
 def home():
 
@@ -94,6 +99,36 @@ def home():
         placed=placed_students,
         not_placed=not_placed_students,
         rate=placement_rate
+    )
+
+
+# ---------------- STUDENT DASHBOARD ----------------
+@app.route('/student-dashboard')
+def student_dashboard():
+
+    if 'user' not in session:
+        return redirect('/login')
+
+    if session.get('role') != 'student':
+        return "Access Denied"
+
+    student_id = session.get('student_id')
+
+    cur = conn.cursor()
+
+    cur.execute(
+        "SELECT * FROM students WHERE id=%s",
+        (student_id,)
+    )
+
+    student = cur.fetchone()
+
+    if not student:
+        return "Student record not found"
+
+    return render_template(
+        'student_dashboard.html',
+        student=student
     )
 
 
