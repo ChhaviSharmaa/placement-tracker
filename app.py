@@ -1,12 +1,17 @@
 from flask import Flask, render_template, request, redirect, session
 import mysql.connector
 from dotenv import load_dotenv
+from google import genai
 import os
 
 load_dotenv()
 
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
+
+
+# ---------------- GEMINI CLIENT ----------------
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 
 # ---------------- DATABASE CONNECTION ----------------
@@ -130,6 +135,59 @@ def student_dashboard():
         'student_dashboard.html',
         student=student
     )
+
+
+# ---------------- AI JOB MATCH ----------------
+@app.route('/ai-match', methods=['GET', 'POST'])
+def ai_match():
+
+    if 'user' not in session:
+        return redirect('/login')
+
+    if session.get('role') != 'student':
+        return "Access Denied"
+
+    if request.method == 'POST':
+
+        resume = request.form['resume'].strip()
+        job_description = request.form['job_description'].strip()
+
+        # ---------------- AI PROMPT ----------------
+        prompt = f"""
+You are a recruitment assistant.
+
+Analyze the student's resume against the job description.
+
+Return the following:
+
+1. Match percentage
+2. Matched skills
+3. Missing skills
+4. Improvement suggestions
+
+Keep the answer clear, practical and easy to understand.
+
+STUDENT RESUME:
+{resume}
+
+JOB DESCRIPTION:
+{job_description}
+"""
+
+        # ---------------- CALL GEMINI ----------------
+        response = client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents=prompt
+        )
+
+        result = response.text
+
+        return render_template(
+            'ai_result.html',
+            result=result
+        )
+
+    return render_template('ai_match.html')
 
 
 # ---------------- STUDENTS ----------------

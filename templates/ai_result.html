@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">AI Job Match Result</h2>
+
+<div class="card shadow p-4">
+
+    <h5 class="mb-3">Analysis</h5>
+
+    <div style="white-space: pre-wrap;">
+        {{ result }}
+    </div>
+
+</div>
+
+<div class="mt-3">
+
+    <a href="/ai-match" class="btn btn-primary">
+        Analyze Another Job
+    </a>
+
+    <a href="/student-dashboard" class="btn btn-secondary">
+        Back to Dashboard
+    </a>
+
+</div>
+
+{% endblock %}

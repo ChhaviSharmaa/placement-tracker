@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">AI Job Match</h2>
+
+<div class="card shadow p-4">
+
+    <p class="text-muted">
+        Enter your resume and the job description to check
+        how well your skills match the job.
+    </p>
+
+    <form method="POST">
+
+        <!-- RESUME -->
+        <div class="mb-4">
+            <label class="form-label">
+                <strong>Your Resume</strong>
+            </label>
+
+            <textarea
+                name="resume"
+                class="form-control"
+                rows="10"
+                placeholder="Paste your resume here..."
+                required
+            ></textarea>
+        </div>
+
+
+        <!-- JOB DESCRIPTION -->
+        <div class="mb-4">
+            <label class="form-label">
+                <strong>Job Description</strong>
+            </label>
+
+            <textarea
+                name="job_description"
+                class="form-control"
+                rows="10"
+                placeholder="Paste the job description here..."
+                required
+            ></textarea>
+        </div>
+
+
+        <button type="submit" class="btn btn-primary">
+            Analyze Resume
+        </button>
+
+        <a href="/student-dashboard" class="btn btn-secondary">
+            Back
+        </a>
+
+    </form>
+
+</div>
+
+{% endblock %}
